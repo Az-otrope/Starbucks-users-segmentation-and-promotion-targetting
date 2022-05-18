@@ -45,4 +45,5 @@ This method allows for more quantitative customer segmentation and promo offerin
 ## Licensing, Authors, Acknowledgements <a name="License"></a>
 * Starbucks for providing the datasets and project goal
 * [Udacity](https://www.udacity.com/) for instructions
+* The main findings and results of this project can be found in this [post](https://medium.com/@nguyenpham111/starbucks-promotional-offers-how-they-influence-customers-buying-behaviors-57e62ca2c0f5)
 * Author: [Nguyen Pham](https://github.com/Az-otrope)
