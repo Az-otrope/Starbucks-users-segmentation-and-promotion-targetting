@@ -27,10 +27,12 @@ The following packages and versions are used in this jupyter notebook. Any newer
 
 ## Results <a name="Results"></a>
 Based on the extensive EDA, two groups of customers were found to be responsive to offers and likely to make a purchase (convert).
-**Male Adult**:
+
+**Male Adult**:<br>
 - most responsive (received, viewed) to offers
 - is also currently the target audience to receive many offers compared to other genders in all age group
-**Female Adult**:
+
+**Female Adult**:<br>
 - most likely to make a purchase using offers (completed)
 - Type of offers: We can continue to send out discounts and BOGO since they drive customers’ buying decisions. The reward value also excites customers.
 - The source of offers that highly correlates with conversion rate is the website. Here is the cue that we should focus on optimizing the presentation of offers on the Starbucks homepage.
