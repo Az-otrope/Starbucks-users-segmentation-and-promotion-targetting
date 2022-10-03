@@ -20,10 +20,11 @@ Not all users receive the same offer, and not all purchases are made using offer
 The following packages and versions are used in this jupyter notebook. Any newer versions should work. 
 | Package  | Version |
 | ------------- | ------------- |
-| Python  | 3.8.5  |
-| Pandas  | 1.1.3  |
-| Numpy   | 1.19.2 |
-| Matplotlib | 3.3.2|
+| Python  | 3.7.6  |
+| Pandas  | 1.3.5  |
+| Numpy   | 1.21.6 |
+| Matplotlib | 3.5.2|
+| plotly. | 4.8.2  |
 
 ## Results <a name="Results"></a>
 Based on the extensive EDA, four (4) groups of customers were found to be responsive to offers and likely to make a purchase (convert).
