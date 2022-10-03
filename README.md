@@ -26,16 +26,29 @@ The following packages and versions are used in this jupyter notebook. Any newer
 | Matplotlib | 3.3.2|
 
 ## Results <a name="Results"></a>
-Based on the extensive EDA, two groups of customers were found to be responsive to offers and likely to make a purchase (convert).
+Based on the extensive EDA, four (4) groups of customers were found to be responsive to offers and likely to make a purchase (convert).
 
-**Male Adult**:<br>
-- most responsive (received, viewed) to offers
+**Receive offers regularly** <br>
+- convert very well
 - is also currently the target audience to receive many offers compared to other genders in all age group
+- male and female identified
 
-**Female Adult**:<br>
-- most likely to make a purchase using offers (completed)
-- Type of offers: We can continue to send out discounts and BOGO since they drive customers’ buying decisions. The reward value also excites customers.
-- The source of offers that highly correlates with conversion rate is the website. Here is the cue that we should focus on optimizing the presentation of offers on the Starbucks homepage.
+**Receive BOGOs** <br>
+- convert very well
+- mainly receive BOGOs offers and utilize them
+- male and female identified
+
+**Don't receive BOGOs at all, but mainly discounts** <br>
+- rarely receive any BOGOs
+- make frequent purchases with or without offers
+
+**Receive many offers but don't convert** <br>
+- frequently receive offers but never open nor complete
+- mainly male
+
+We can continue to send out offers that are discount and BOGO since they drive customers' buying decisions. The reward value also excite customers.
+
+The source of offers that highly correlates with conversion rate are social and website. Here is the cue that we should focus on optimizing the presentation of offers on Starbucks social platform and homepage.
 
 ## Discussion <a name="Discussion"></a>
 More sophisticated strategies could be employed to achieve a higher conversion rate among Starbucks customers. Uplift modeling can be used to identify the right customer group for a specific promotion. The uplift model method of "two classifiers" can be used. The process will consist of two steps:
