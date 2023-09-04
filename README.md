@@ -53,6 +53,7 @@ This dataset is highly imbalanced. The number of customers not making purchases 
 
 - The SMOTE method was applied to resample and balance the data set.
 - Compared the performance of 4 models: Logistic regression, Balanced random forest classifier, KNN, and XGBoost.
+  
 ![models](img/models_comparison.png)<br>
 Figure 2. Compare the performance of 4 classification models on the test set.
 
@@ -129,7 +130,7 @@ Figure 7. Segmentation analysis utilizing K-means, where k = 4.
 **Receive many offers but don't convert (green)** <br>
 - frequently receive offers but never open nor complete
 
-Currently, the offers are *significantly spent on one wrong audience*, who don’t interact with the offers. This group is the second largest in size for this test. Based on the segmentation analysis, we can now better target the right groups that convert well to boost profit.
+Currently, the offers are *significantly spent on one wrong audience*, who don’t interact with the offers. This group is the second largest group receiving offers for this test. Based on the segmentation analysis, we can better target the right groups that convert well to boost profit.
 We can continue to send out offers that are discount and BOGO since they drive customers' buying decisions. The reward value also excites customers.<br>
 
 ![clusters](img/clusters.png)<br>
