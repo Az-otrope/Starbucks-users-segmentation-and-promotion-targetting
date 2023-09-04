@@ -1,112 +1,147 @@
-# Users-Segmentation-and-Promotion-Targeting
-- [Motivation](#Project-Motivation)
-- [Installation](#Installation)
-- [Feature Engineering](#Feature-Engineering)
-- [EDA](#EDA)
-- [Results](#Results)
+# Promotion-Targeting-and-Users-Segmentation
+- [Project Motivation](#Motivation)
+- [Project Workflow](#Workflow)<br>
+**A. Predictive Classifier**
+- [A1. Hypothesis Testing](#Hypothesis)
+- [A2. Modelling](#Model)<br>
+**B. Customer Segmentation**
+- [B1. EDA](#EDA)
+- [B2. Feature Engineering](#Feature-Engineering)
+- [B3. Segmentation Model](#Clustering)<br>
 - [Discussion](#Discussion)
 - [Licensing, Authors, Acknowledgements](#License)
 
-## Project Motivation <a name="Project-Motivation"></a>
+# Project Motivation <a name="Motivation"></a>
 
-**Background:** This data set contains 1-month simulated data that mimics customer behavior on the Starbucks rewards mobile app. The dataset entails customers’ input information, spending habits, and transactions made on the app.
-Starbucks sends out an offer to users of the mobile app every few days. Some users may receive offers frequently, some may not for a while. The offers are presented in 3 ways:
-Discount: The user gains a reward equal to a fraction of the amount spent
-BOGO (buy one get one free): The user needs to spend a certain amount to get a reward equal to that threshold amount
-Informational: an advertisement for a drink or product
-Not all users receive the same offer, and not all purchases are made using offers. That makes data wrangling a big challenge for this dataset.
+**Background:** The dataset contains 1-month simulated data that mimics customer behavior on the Starbucks mobile app during a promotional period. Some users may receive offers frequently, some may not for a while. The offers are presented in 3 ways:
+- Discount: The user gains a reward equal to a fraction of the amount spent
+- BOGO (buy one get one free): The user needs to spend a certain amount to get a reward equal to that threshold amount
+- Informational: an advertisement for a drink or product
+  
+Not all users receive the same offer, and not all purchases are made using offers. The customers' responses to offers are categorized as:
+- received: received the offers from different channels (email, mobile, social)
+- viewed: viewed the offers
+- completed: made a purchase with the offers
 
-**The goal** of this project is to combine transaction, demographic, and offer data to determine which demographic groups respond best to which offer type.
+**The goal** of this project is:
+- to build a model that predicts which customers would receive offers to, specifically, maximize the two KPIs metrics: Incremental Response Rate (IRR) and Net Incremental Revenue (NIR)
+- to define customer segmentations based on their transactions, demographics, and responses to offers
 
-## Installation <a name="Installation"></a>
-The following packages and versions are used in this Jupyter Notebook. Any newer versions should work. 
-| Package  | Version |
-| ------------- | ------------- |
-| Python  | 3.7.6  |
-| Pandas  | 1.3.5  |
-| Numpy   | 1.21.6 |
-| Matplotlib | 3.5.2|
-| plotly | 4.8.2  |
+The dataset contains 4 files, 3 of which are used for customer segmentation and 1 is for building the predictive model.
 
-## Feature Engineering <a name="Feature-Engineering"></a>
+# Project Workflow <a name="Workflow"></a>
+![BFD](img/BFD.png)<br>
+Figure 1. Project workflow to segment the customers that are receiving offers and to build a predictive model
+
+# A. Predictive Classifier
+Determine if promotional offers help increase the business KPIs: IRR (incremental response rate) and NIR (net incremental rate).
+- The dataset: a control group (no offers) and a treatment group (receives offers) 
+
+## A1. Hypothesis Testing <a name="Hypothesis"></a>
+A hypothesis test to evaluate whether promotions have a positive impact on increasing the IRR and NIR. (See folder KPIs for more details)
+
+![kpi](img/evaluation_metric_hypo.png)<br>
+
+**Results**
+- p-value IRR = 0.0 -> Reject Ho -> Increase purchase rate
+- p-value NIR = 0.99999 -> Do not reject Ho -> NIR = 0
+
+The promotion increases the IRR (response rate) but not the NIR, which indicates Starbucks **needs to re-asset the target groups**. We will visit this in the Customer Segmentation part of the project.  
+
+## A2. Modelling <a name="Model"></a>
+This dataset is highly imbalanced. The number of customers not making purchases is much more than those who do, regardless of whether they receive promotional offers or not. For this reason, standard ML algorithms applying to the given data set will have a tendency to assign No-Promotion to all customers rather than trying to classify them.
+
+- The SMOTE method was applied to resample and balance the data set.
+- Compared the performance of 4 models: Logistic regression, Balanced random forest classifier, KNN, and XGBoost.
+![models](img/models_comparison.png)<br>
+Figure 2. Compare the performance of 4 classification models on the test set.
+
+**XGBoost** performed best and resulted in the highest IRR value and a positive NIR value.
+
+![lift](img/lift_chart.png)<br>
+Figure 3. The lift chart analyzed from the test set with a baseline rate of 1% (sending promotions to the entire sample population)
+
+**Result**
+Target the top 10% - 15% of the population will potentially result in a 1.4 - 1.8X lift in response rate
+
+# B. Customers Segmentation 
+From the results of building a classifier (part A), we see that giving out the promotion is not yet profitable. I'm going to analyze the current customer segmentation to identify whether Starbucks is targeting the right audience.<br>
+- Dataset: treated group (all customers received promotional offers)
+
+## B1. EDA <a name="EDA"></a>
+First, we checked the dataset's quality, including examining the missing data, duplicated entries, and feature distribution.  
+The features include
+- customers demographics: sex (male, female, other), age, income, the amount spent
+- type of offers (BOGO, discount, informational)
+- Customers' responses to offers (offer received, viewed, completed)
+
+**Customer Demographics**
+![feature](img/feature_dist.png)<br>
+Figure 4. Features Distributions: gender (F: female, M: male, O: other), age, and income. The median income range is $49,000 — $79,000 and the average transaction is made at $119.66.
+
+![num_feat](img/age_income.png)<br>
+Figure 5. Income, age, and transactions made with respect to gender
+
+*Key findings*:
+- Most customers identified as male
+- The Average age of customers is: 54.0 years old
+- The average income of customers is: $65206.98
+
+**Offers distribution**
+![response](img/offers_responses.png)<br>
+Figure 6. Customer responses distribution (received, viewed, completed) and gender distribution with respect to each type of offer.
+
+*Key findings*:
+- Dominant offers are BOGO (42.9%) and Discount (41.9%)
+- All 3 types of offers are equally distributed to all genders
+- Purchase generated slightly more from Discount than BOGO
+
+## B2. Feature Engineering <a name="Feature-Engineering"></a>
+
 Compute **Recency, Frequency, Monetary Value (RFM)**
 - Recency: number of days after the test starts
 - Frequency: how many times the customer makes purchases
 - Monetary value: the total amount a customer spent
 
-For each type of offer, the responses (received, viewed, and completed) are counted and calculated into rates (view_rate, complete_rate)
-- bogo_vr, bogo_cr
-- discount_vr, discount_cr
-- info_vr, info_cr
+Compute: customer's **responses rates** (viewed_rate, completed_rate) for each type of offer and total conversion rate
+- total conversion rate = completed / received
+- viewed rate (vr) = viewed / received
+- completed rate (cr) = completed / received
   
-## EDA <a name="EDA"></a>
-First, we take a look at the **feature distribution**. The features include sex (male, female, other), age, income, the amount spent, type of offers (BOGO, discount, informational), and customers' responses to offers (offer received, viewed, completed).
-
-![feature](img/feature_dist.png)<br>
-Figure 1. Features Distributions: gender, age, income, and the amount spent on transactions. The median income range is $49,000 — $79,000 and the average transaction is made at $119.66.
-
-![num_feat](img/spending_habit.png)<br>
-Figure 2. Income, age, and transactions made with respect to gender
-
-*Key findings*:
-- Most customers identified as male
-- For transactions more than 300 USD or so, there is an observed linear between income and the amount spent. This behavior is the same for both genders Female and Male
-- Other gender spends less than Female and Male
-
-**Offers distribution**
-
-![offers](img/offers_responses.png)<br>
-Figure 3. Distribution of Offer Types (L) and Customers Response to Offers (R)
-
-![response](img/offers_customers.png)<br>
-Figure 4. Customer responses to each type of offer.
-
-*Key findings*:
-- Dominant offers are BOGO (42.9%) and Discount (41.9%)
-- Male receives more offers compared to female and other.
-- Male adults are more responsive to offers.
-- Purchase usually comes from Discount then BOGO
-
-## Results <a name="Results"></a>
-I utilized the PCA technique to reduce the complexity of the dataset. K-means clustering analysis was used to identify four (4) groups of customers who were responsive to offers and likely to make a purchase (convert).
+## B3. Segmentation Model <a name="Clustering"></a>
+I utilized the PCA technique to reduce the complexity of the dataset. K-means clustering analysis (elbows and silhouette methods) was used to identify four (4) groups of customers who were responsive to offers and likely to make a purchase (convert).
 
 ![kmean](img/kmean_classification_result.png)<br>
-Figure 5. Segmentation analysis utilizing K-means, where k = 4.
+Figure 7. Segmentation analysis utilizing K-means, where k = 4.
 
-**Receive offers regularly** <br>
+**Receive offers regularly (purple)** <br>
 - convert very well
 - is also currently the target audience to receive many offers compared to other genders in all age groups
-- males and female-identified
-
-**Receive BOGOs** <br>
+  
+**Receive BOGOs (red)** <br>
 - convert very well
 - mainly receive BOGO offers and utilize them
-- males and female-identified
 
-**Don't receive BOGOs at all, but mainly discounts** <br>
+**Receive mainly discounts, don't receive BOGOs at all (blue)** <br>
 - rarely receive any BOGOs
 - make frequent purchases with or without offers
 
-**Receive many offers but don't convert** <br>
+**Receive many offers but don't convert (green)** <br>
 - frequently receive offers but never open nor complete
-- mainly male
 
-Currently, the offers are significantly spent on one wrong audience, who don’t interact with the offers. This group is the second large in size of this test. Based on the segmentation analysis, we can now better target the right groups that convert well to boost profit.
+Currently, the offers are *significantly spent on one wrong audience*, who don’t interact with the offers. This group is the second largest in size for this test. Based on the segmentation analysis, we can now better target the right groups that convert well to boost profit.
 We can continue to send out offers that are discount and BOGO since they drive customers' buying decisions. The reward value also excites customers.<br>
-The source of offers that highly correlates with conversion rate are social and website. Here is the cue that we should focus on optimizing the presentation of offers on Starbucks's social platform and homepage.
 
 ![clusters](img/clusters.png)<br>
-Figure 6. Clusters distributions. Cluster 0: don’t receive BOGO, Cluster 1: receives regular offers but never converts, Cluster 2: mainly receives BOGO and converts very well, and Cluster 3: receives offers regularly and converts well.
+Figure 8. Clusters distributions. Cluster 0: mainly discount - no BOGO, Cluster 1: receives regular offers but never converts, Cluster 2: mainly receives BOGO and converts very well, and Cluster 3: receives offers regularly and converts well.
 
-## Discussion <a name="Discussion"></a>
-More sophisticated strategies could be employed to achieve a higher conversion rate among Starbucks customers. Uplift modeling can be used to identify the right customer group for a specific promotion. The uplift model method of "two classifiers" can be used. The process will consist of two steps:
-1. Conduct a randomized A/B test, in which the treatment group of customers receives and offers and the control group does not. Train classifiers to predict the likelihood (probability) of conversion for both groups. Add two classifiers into one using a special library (upliftML, casualML). Use a combined classifier on the entire customer base to identify customers with high conversion probability.
-2. Conduct a second A/B test, in which the treatment group is customers with a high conversion probability receive promo offers and the control group consisting of random customers also receive promo offers. Calculate lift as the difference in total conversion or total amount spent.
-
-This method allows for more quantitative customer segmentation and promo offerings, rather than qualitative, human-decision-based strategies.
+## Conclusion <a name="Conclusion"></a>
+After segmenting the current customers who received promotional offers and calculating the business KPIs, there are 2 conclusions being drawn:
+1. Promotional offers do indeed increase the response rate, but not yet the net profit rate because the current strategy is wrongly targeting 1/4 of customer groups.
+2. Target 15% of the population with discount and BOGO offers, and minimize the informational offers. 
 
 ## Licensing, Authors, Acknowledgements <a name="License"></a>
 * Starbucks for providing the datasets and project goal
-* [Udacity](https://www.udacity.com/) for instructions
+* Udacity
 * The main findings and results of this project can be found in this [post](https://medium.com/@nguyenpham111/starbucks-promotional-offers-how-they-influence-customers-buying-behaviors-57e62ca2c0f5)
 * Author: [Nguyen Pham](https://github.com/Az-otrope)
